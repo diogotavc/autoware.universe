@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(lidar_centerpoint)
 
+add_compile_options(-Wno-error=deprecated-declarations)
+
 find_package(autoware_cmake REQUIRED)
 autoware_package()
 
@@ -115,6 +117,9 @@ if(TRT_AVAIL AND CUDA_AVAIL AND CUDNN_AVAIL)
   download(v1 pts_backbone_neck_head_centerpoint_tiny.onnx e97c165c7877222c0e27e44409a07517)
 
   find_package(ament_cmake_auto REQUIRED)
+  # [FIX 1/2] Find the missing package explicitly
+  find_package(tf2_sensor_msgs REQUIRED)
+  
   ament_auto_find_build_dependencies()
 
   include_directories(
@@ -150,6 +155,11 @@ if(TRT_AVAIL AND CUDA_AVAIL AND CUDNN_AVAIL)
     ${CUDA_curand_LIBRARY}
     ${CUDNN_LIBRARY}
     centerpoint_cuda_lib
+  )
+  
+  # [FIX 2/2] Link the missing package to the library
+  ament_target_dependencies(centerpoint_lib
+    tf2_sensor_msgs
   )
 
   target_include_directories(centerpoint_lib

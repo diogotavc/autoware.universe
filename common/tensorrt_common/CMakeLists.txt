@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(tensorrt_common)
 
+add_compile_options(-Wno-error=deprecated-declarations)
+
 find_package(autoware_cmake REQUIRED)
 autoware_package()
 
